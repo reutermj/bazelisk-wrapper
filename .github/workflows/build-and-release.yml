@@ -28,8 +28,7 @@ jobs:
       with:
         subject-path: ./bazel
 
-    #- run: gh release view --json tagName --jq .tagName | { read version; echo "RELEASE_TAG=v$((${version#v} + 1))"; } >> $GITHUB_ENV
-    - run: echo "RELEASE_TAG=v0" >> $GITHUB_ENV
+    - run: gh release view --json tagName --jq .tagName | { read version; echo "RELEASE_TAG=v$((${version#v} + 1))"; } >> $GITHUB_ENV
     - run: gh release create ${{ env.RELEASE_TAG }} --generate-notes
       env:
            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
