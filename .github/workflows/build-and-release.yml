@@ -16,11 +16,12 @@ jobs:
     - uses: actions/checkout@v4.2.2
 
     - run: |
+        mkdir cosmocc
+        cd cosmocc
         wget https://cosmo.zip/pub/cosmocc/cosmocc.zip
         unzip cosmocc.zip
-        chmod +x bin/cosmocc
 
-    - run: ./bin/cosmocc -o bazel main.c
+    - run: cosmocc/bin/cosmocc -o bazel main.c
 
     - uses: actions/attest-build-provenance@v2.3.0
       with:
