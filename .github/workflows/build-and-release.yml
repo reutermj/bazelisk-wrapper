@@ -1,0 +1,33 @@
+name: Build and Release
+
+on:
+  push:
+    branches: [ main ]
+
+permissions:
+  id-token: write
+  attestations: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4.2.2
+
+    - run: |
+        wget https://cosmo.zip/pub/cosmocc/cosmocc.zip
+        unzip cosmocc.zip
+        chmod +x bin/cosmocc
+
+    - run: ./bin/cosmocc -o bazel main.c
+
+    - uses: actions/attest-build-provenance@v2.3.0
+      with:
+        subject-path: ./bazel
+
+    #- run: gh release view --json tagName --jq .tagName | { read version; echo "RELEASE_TAG=v$((${version#v} + 1))"; } >> $GITHUB_ENV
+    - run: echo "RELEASE_TAG=v0" >> $GITHUB_ENV
+    - run: gh release create ${{ env.RELEASE_TAG }} --generate-notes
+    - run: gh release upload ${{ env.RELEASE_TAG }} ./bazel
+    
